@@ -15,6 +15,7 @@ downloads/
 eggs/
 .eggs/
 lib/training/images_1
+lib/evaluation/images
 lib64/
 parts/
 sdist/
