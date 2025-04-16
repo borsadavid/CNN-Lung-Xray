@@ -5,8 +5,7 @@ from torch.utils.data.sampler import WeightedRandomSampler
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, hamming_loss, jaccard_score, classification_report
 import numpy as np
 
-from helpers.save_load_model import save_checkpoint, load_checkpoint
-
+from helpers.save_load_model import save_checkpoint, load_checkpoint, get_checkpoint_path
 
 import torch
 from torch import nn, optim
@@ -19,18 +18,7 @@ from helpers.save_load_model import save_checkpoint, load_checkpoint
 
 
 class Trainer:
-    def __init__(self, model, train_dataloader, eval_dataloader, lr=0.001, checkpoint_path=None, accumulation_steps=2):
-        """
-        Initializes the Trainer.
-
-        Args:
-            model: The PyTorch model to train.
-            train_dataloader (DataLoader): DataLoader for training data.
-            eval_dataloader (DataLoader): DataLoader for evaluation data.
-            lr (float): Learning rate for the optimizer.
-            checkpoint_path (str): Path to save model checkpoints.
-            accumulation_steps (int): Number of steps for gradient accumulation.
-        """
+    def __init__(self, model, train_dataloader, eval_dataloader, lr=0.001, model_name='', accumulation_steps=2):
         self.model = model
         self.train_dataloader = train_dataloader
         self.eval_dataloader = eval_dataloader
@@ -55,7 +43,8 @@ class Trainer:
         self.scaler = GradScaler()
 
         # Model checkpoint path
-        self.checkpoint_path = checkpoint_path
+        self.model_name = model_name
+        self.checkpoint_path = get_checkpoint_path(model_name)
 
         # Gradient accumulation
         self.accumulation_steps = accumulation_steps
@@ -79,11 +68,7 @@ class Trainer:
         """
         if self.checkpoint_path and isinstance(self.checkpoint_path, str):
             try:
-                start_epoch = load_checkpoint(
-                    self.checkpoint_path,
-                    self.model,
-                    self.optimizer
-                )
+                _, start_epoch = load_checkpoint(self.model_name, self.optimizer)
                 return start_epoch
             except FileNotFoundError:
                 print(f"No checkpoint found at {self.checkpoint_path}, starting fresh.")
@@ -144,17 +129,9 @@ class Trainer:
             avg_loss = running_loss / len(self.train_dataloader.dataset)
             print(f"Epoch [{epoch + 1}/{total_epochs}], Loss: {avg_loss:.4f}")
 
-            # Evaluate on validation set
-            val_f1 = self.evaluate()
-
-            # Adjust learning rate based on validation F1 score
-            self.scheduler.step(val_f1)
-
             # Save checkpoint if validation F1 improves
-            if val_f1 > best_f1:
-                best_f1 = val_f1
-                if self.checkpoint_path is not None:
-                    save_checkpoint(self.model, self.optimizer, epoch + 1, self.checkpoint_path)
+            if self.checkpoint_path is not None:
+                save_checkpoint(self.model, self.model_name, self.optimizer, epoch + 1)
 
     def evaluate(self):
         """
