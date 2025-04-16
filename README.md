@@ -1,8 +1,11 @@
 # Multi-Label Classification Model Performance (30 epochs)
 
-## Trained models with GUI that predicts Lung X-Rays
+## Trained models with GUI that predicts Lung X-Rays    
+![image](https://github.com/user-attachments/assets/6612ce4e-0a6d-4c26-a868-01c9d42ba02f)
+![image](https://github.com/user-attachments/assets/ad130c86-eda0-4c3c-b26d-7c212ac64a47)
+      
 
-## Overall Metrics Comparison
+## Overall Models Performance & Comparison
 
 | Metric | EfficientNet | ResNet50 | MobileNet_v2 |
 | --- | --- | --- | --- |
