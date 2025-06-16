@@ -3,9 +3,22 @@
 ## Trained models with GUI that predicts Lung X-Rays    
 ![image](https://github.com/user-attachments/assets/6612ce4e-0a6d-4c26-a868-01c9d42ba02f)
 ![image](https://github.com/user-attachments/assets/ad130c86-eda0-4c3c-b26d-7c212ac64a47)
-      
 
-## Overall Models Performance & Comparison
+## Project use:  
+To test the app simply comment out all function calls from main except ```launch_gui()```
+    
+The app uses the trained models from ```lib/model```.  
+Uncomment the other functions from main for more training/evaluation.  
+Training will either pick the existing checkpoint, or, if not found, create a new model training from scratch.   
+Other models can be trained, simply replace ```model_name``` from ```main()``` with:  
+"resnet18"
+"resnet50"
+"mobilenet_v2"
+"efficientnet_b0"
+"shufflenet_v2_x1_0"
+
+
+## Overall Metrics Comparison
 
 | Metric | EfficientNet | ResNet50 | MobileNet_v2 |
 | --- | --- | --- | --- |
@@ -83,7 +96,7 @@
 
 ## Installation
 
-To set up the environment, run the following commands:
+To set up the environment, use Anaconda and create a virtual env named (e.g "pytorch_env"), run the following commands:
 
 ```bash
 conda activate pytorch_env
